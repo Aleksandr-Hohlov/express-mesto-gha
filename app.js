@@ -3,10 +3,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+// eslint-disable-next-line import/no-unresolved
 
 const cardsRouter = require('./routes/cards');
-// eslint-disable-next-line import/no-unresolved
-const usersRouter = require('./routes/users');
 
 const app = express();
 const { PORT = 3000 } = process.env;
@@ -24,7 +23,6 @@ app.use((req, res, next) => {
 });
 
 app.use('/cards', cardsRouter);
-app.use('/users', usersRouter);
 
 app.listen(PORT, () => {
   // Если всё работает, консоль покажет, какой порт приложение слушает
