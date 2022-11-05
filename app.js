@@ -1,10 +1,8 @@
-/* eslint-disable import/extensions */
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-// eslint-disable-next-line import/no-unresolved
-
+const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 
 const app = express();
@@ -23,8 +21,6 @@ app.use((req, res, next) => {
 });
 
 app.use('/cards', cardsRouter);
+app.use('/users', usersRouter);
 
-app.listen(PORT, () => {
-  // Если всё работает, консоль покажет, какой порт приложение слушает
-  console.log(`App listening on port ${PORT}`);
-});
+app.listen(PORT);

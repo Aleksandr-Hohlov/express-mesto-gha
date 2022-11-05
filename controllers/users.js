@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-unresolved, import/extensions
 const User = require('../models/user');
 
 const getUsers = (req, res, next) => {
