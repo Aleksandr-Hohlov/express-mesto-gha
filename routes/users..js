@@ -6,6 +6,7 @@ const {
   getUserId,
   updateUser,
   updateAvatar,
+  // eslint-disable-next-line import/no-unresolved, import/extensions
 } = require('../controllers/users');
 
 usersRouter.get('/users', getUsers);
