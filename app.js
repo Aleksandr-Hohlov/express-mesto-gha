@@ -9,8 +9,10 @@ const cardsRouter = require('./routes/cards');
 const usersRouter = require('./routes/users');
 
 const app = express();
-
+const { PORT = 3000 } = process.env;
+mongoose.connect('mongodb://localhost:27017/mestodb'); // подключаемся к базе данных
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true })); // для приёма веб-страниц внутри POST-запроса
 
 app.use(express.json());
 app.use(cookieParser());
@@ -21,10 +23,10 @@ app.use((req, res, next) => {
   next();
 });
 
-const { PORT = 3000, MONGO_URL = 'mongodb://localhost:27017/mestodb' } = process.env;
-mongoose.connect(MONGO_URL);
-
 app.use('/cards', cardsRouter);
 app.use('/users', usersRouter);
 
-app.listen(PORT);
+app.listen(PORT, () => {
+  // Если всё работает, консоль покажет, какой порт приложение слушает
+  console.log(`App listening on port ${PORT}`);
+});
