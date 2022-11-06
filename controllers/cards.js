@@ -4,7 +4,7 @@ const { STATUS, ERROR_MESSAGE, ERROR_NAME } = require('../constants/constants');
 const getAllCards = (req, res) => {
   Card.find({})
     .then((cards) => res.send(cards))
-    .catch(() => res.status(500).send({ message: 'Ошибка на сервере' }));
+    .catch((err) => res.status(500).send({ message: err.message }));
 };
 
 const createCard = (req, res) => {
@@ -13,7 +13,7 @@ const createCard = (req, res) => {
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === ERROR_NAME.VALIDATION) {
-        res.status(STATUS.BAD_REQUEST).send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
+        res.status(STATUS.BAD_REQUEST).send({ message: err.message });
       } else {
         res.status(500).send({ message: err.message });
       }
@@ -30,7 +30,7 @@ const deleteCard = (req, res) => {
       }
     })
     .catch((err) => {
-      if (err.name === ERROR_NAME.CAST) {
+      if (err.name === 'CastError') {
         res.status(STATUS.BAD_REQUEST).send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
       } else {
         res.status(500).send({ message: err.message });
@@ -55,10 +55,10 @@ const likeCard = (req, res) => Card.findByIdAndUpdate(
     }
   })
   .catch((err) => {
-    if (err.name === ERROR_NAME.CAST) {
+    if (err.name === 'CastError') {
       res.status(STATUS.BAD_REQUEST).send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
     } else {
-      res.status(500).send({ message: 'Ошибка на сервере' });
+      res.status(500).send({ message: err.message });
     }
   });
 
@@ -78,11 +78,11 @@ const dislikeCard = (req, res) => Card.findByIdAndUpdate(
       res.status(STATUS.NOT_FOUND).send({ message: ERROR_MESSAGE.NOT_FOUND.CARD_LIKES });
     }
   })
-  .catch((e) => {
-    if (e.name === ERROR_NAME.CAST) {
+  .catch((err) => {
+    if (err.name === 'CastError') {
       res.status(STATUS.BAD_REQUEST).send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
     } else {
-      res.status(500).send({ message: 'Ошибка на сервере' });
+      res.status(500).send({ message: err.message });
     }
   });
 
