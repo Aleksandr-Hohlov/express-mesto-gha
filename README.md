@@ -1,25 +1,20 @@
-![Ссылка на проект Mesto](./images/logo_b.jpg)
-****
-**[Проект: Место](https://aleksandr-hohlov.github.io/mesto/)**
-### Проектная работа №3.
+[![Tests](../../actions/workflows/tests-13-sprint.yml/badge.svg)](../../actions/workflows/tests-13-sprint.yml) [![Tests](../../actions/workflows/tests-14-sprint.yml/badge.svg)](../../actions/workflows/tests-14-sprint.yml)
 
-**Описание проекта:**
+# Проект Mesto фронтенд + бэкенд
 
-* вёрстка адаптивная: ширина зоны с содержимым меняется вместе с шириной окна браузера;
-* реализовано с использованием JavaScript popup *редактирования профиля/добавления элемента на страницу/preview элемента*;
-* реализовано с использованием JavaScript *открытие/закрытие/сохранение данных в профиле*;
-* проектная работа опубликована на [gh-pages](https://aleksandr-hohlov.github.io/mesto/);
-* при создании использованы grid-элементы;
-* при создании использованы медиа запросы;
-* при создании использованы template-элементы;
-* файловая структура реализована по БЭМ;
-* проект создан по макету Figma;
+## Директории
 
+`/routes` — папка с файлами роутера  
+`/controllers` — папка с файлами контроллеров пользователя и карточки  
+`/models` — папка с файлами описания схем пользователя и карточки
 
-****
-***[Ссылка на проект Mesto](https://aleksandr-hohlov.github.io/mesto/)***
-****
+Остальные директории вспомогательные, создаются при необходимости разработчиком
 
+## Запуск проекта
 
+`npm run start` — запускает сервер  
+`npm run dev` — запускает сервер с hot-reload
 
+## Ссылка на репозиторий проекта
 
+[https://github.com/Aleksandr-Hohlov/express-mesto-gha](https://github.com/Aleksandr-Hohlov/express-mesto-gha)
