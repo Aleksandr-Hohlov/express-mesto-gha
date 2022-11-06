@@ -1,5 +1,5 @@
 const Card = require('../models/card');
-const { STATUS, ERROR_MESSAGE, ERROR_NAME } = require('../constants/constants');
+const { ERROR_MESSAGE, ERROR_NAME } = require('../constants/constants');
 
 const getAllCards = (req, res) => {
   Card.find({})
@@ -13,7 +13,7 @@ const createCard = (req, res) => {
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === ERROR_NAME.VALIDATION) {
-        res.status(STATUS.BAD_REQUEST).send({ message: err.message });
+        res.status(400).send({ message: err.message });
       } else {
         res.status(500).send({ message: err.message });
       }
@@ -26,12 +26,12 @@ const deleteCard = (req, res) => {
       if (card) {
         res.send(card);
       } else {
-        res.status(STATUS.NOT_FOUND).send({ message: ERROR_MESSAGE.NOT_FOUND.CARD });
+        res.status(404).send({ message: ERROR_MESSAGE.NOT_FOUND.CARD });
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(STATUS.BAD_REQUEST).send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
+        res.status(400).send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
       } else {
         res.status(500).send({ message: err.message });
       }
@@ -51,12 +51,12 @@ const likeCard = (req, res) => Card.findByIdAndUpdate(
     if (card) {
       res.send(card);
     } else {
-      res.status(STATUS.NOT_FOUND).send({ message: ERROR_MESSAGE.NOT_FOUND.CARD });
+      res.status(404).send({ message: ERROR_MESSAGE.NOT_FOUND.CARD });
     }
   })
   .catch((err) => {
     if (err.name === 'CastError') {
-      res.status(STATUS.BAD_REQUEST).send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
+      res.status(400).send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
     } else {
       res.status(500).send({ message: err.message });
     }
@@ -75,12 +75,12 @@ const dislikeCard = (req, res) => Card.findByIdAndUpdate(
     if (card) {
       res.send(card);
     } else {
-      res.status(STATUS.NOT_FOUND).send({ message: ERROR_MESSAGE.NOT_FOUND.CARD_LIKES });
+      res.status(404).send({ message: ERROR_MESSAGE.NOT_FOUND.CARD_LIKES });
     }
   })
   .catch((err) => {
     if (err.name === 'CastError') {
-      res.status(STATUS.BAD_REQUEST).send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
+      res.status(400).send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
     } else {
       res.status(500).send({ message: err.message });
     }

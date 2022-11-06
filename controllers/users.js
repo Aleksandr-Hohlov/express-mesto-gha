@@ -1,5 +1,5 @@
 const User = require('../models/user');
-const { STATUS, ERROR_MESSAGE, ERROR_NAME } = require('../constants/constants');
+const { ERROR_MESSAGE, ERROR_NAME } = require('../constants/constants');
 
 module.exports.getAllUsers = (req, res) => {
   User.find({})
@@ -13,12 +13,12 @@ module.exports.getUserById = (req, res) => {
       if (user) {
         res.send(user);
       } else {
-        res.status(STATUS.NOT_FOUND).send({ message: ERROR_MESSAGE.NOT_FOUND.USER });
+        res.status(404).send({ message: ERROR_MESSAGE.NOT_FOUND.USER });
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(STATUS.BAD_REQUEST).send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_GET });
+        res.status(400).send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_GET });
       } else {
         res.status(500).send({ message: 'Ошибка на сервере' });
       }
@@ -31,7 +31,7 @@ module.exports.createUser = (req, res) => {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === ERROR_NAME.VALIDATION) {
-        res.status(STATUS.BAD_REQUEST).send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_CREATE });
+        res.status(400).send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_CREATE });
       } else {
         res.status(500).send({ message: 'Ошибка на сервере' });
       }
@@ -52,12 +52,12 @@ module.exports.updateUserInfo = (req, res) => {
       if (user) {
         res.send(user);
       } else {
-        res.status(STATUS.NOT_FOUND).send({ message: ERROR_MESSAGE.NOT_FOUND.USER });
+        res.status(404).send({ message: ERROR_MESSAGE.NOT_FOUND.USER });
       }
     })
     .catch((err) => {
       if (err.name === ERROR_NAME.VALIDATION || err.name === 'CastError') {
-        res.status(STATUS.BAD_REQUEST).send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_UPDATE });
+        res.status(400).send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_UPDATE });
       } else {
         res.status(500).send({ message: 'Ошибка на сервере' });
       }
@@ -71,12 +71,12 @@ module.exports.updateAvatar = (req, res) => {
       if (user) {
         res.send(user);
       } else {
-        res.status(STATUS.NOT_FOUND).send({ message: ERROR_MESSAGE.NOT_FOUND.USER });
+        res.status(404).send({ message: ERROR_MESSAGE.NOT_FOUND.USER });
       }
     })
     .catch((err) => {
       if (err.name === ERROR_NAME.VALIDATION || err.name === 'CastError') {
-        res.status(STATUS.BAD_REQUEST).send({ message: ERROR_MESSAGE.BAD_REQUEST.AVATAR });
+        res.status(400).send({ message: ERROR_MESSAGE.BAD_REQUEST.AVATAR });
       } else {
         res.status(500).send({ message: 'Ошибка на сервере' });
       }
