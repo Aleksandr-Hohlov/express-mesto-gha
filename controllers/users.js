@@ -1,74 +1,102 @@
 const User = require('../models/user');
+const { STATUS, ERROR_MESSAGE, ERROR_NAME } = require('../constants/constants');
 
-const getUsers = (req, res) => {
+module.exports.getAllUsers = (req, res) => {
   User.find({})
-    .then((users) => res.send({ users }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .then((users) => res.send(users))
+    .catch(() => res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR }));
 };
 
-const getUserId = (req, res) => {
+module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (user) {
         res.send(user);
       } else {
-        res.status(404).send({ message: 'Пользователь с указанным _id не найден' });
+        res
+          .status(STATUS.NOT_FOUND)
+          .send({ message: ERROR_MESSAGE.NOT_FOUND.USER });
       }
     })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((e) => {
+      if (e.name === ERROR_NAME.CAST) {
+        res
+          .status(STATUS.BAD_REQUEST)
+          .send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_GET });
+      } else {
+        res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
+      }
+    });
 };
 
-const createUser = (req, res) => {
+module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
-    .then((user) => {
-      if (user) {
-        res.send(user);
+    .then((user) => res.send(user))
+    .catch((e) => {
+      if (e.name === ERROR_NAME.VALIDATION) {
+        res
+          .status(STATUS.BAD_REQUEST)
+          .send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_CREATE });
       } else {
-        res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя' });
+        res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
       }
-    })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    });
 };
 
-const updateUserInfo = (req, res) => {
+module.exports.updateUserInfo = (req, res) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
     { name, about },
     {
       new: true,
+      runValidators: true,
     },
   )
     .then((user) => {
       if (user) {
         res.send(user);
       } else {
-        res.status(404).send({ message: 'Пользователь с указанным _id не найден' });
+        res
+          .status(STATUS.NOT_FOUND)
+          .send({ message: ERROR_MESSAGE.NOT_FOUND.USER });
       }
     })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }))
-    .catch(() => res.status(400).send({ message: 'Переданы некорректные данные при обновлении профиля' })); // prettier-ignore
+    .catch((e) => {
+      if (e.name === ERROR_NAME.VALIDATION || e.name === ERROR_NAME.CAST) {
+        res
+          .status(STATUS.BAD_REQUEST)
+          .send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_UPDATE });
+      } else {
+        res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
+      }
+    });
 };
 
-const updateAvatar = (req, res) => {
+module.exports.updateAvatar = (req, res) => {
   const { avatar } = req.body;
-  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true })
+  User.findByIdAndUpdate(
+    req.user._id,
+    { avatar },
+    { new: true },
+  )
     .then((user) => {
       if (user) {
         res.send(user);
       } else {
-        res.status(404).send({ message: 'Пользователь с указанным _id не найден' });
+        res
+          .status(STATUS.NOT_FOUND)
+          .send({ message: ERROR_MESSAGE.NOT_FOUND.USER });
       }
     })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }))
-    .catch(() => res.status(400).send({ message: 'Переданы некорректные данные при обновлении аватара' })); // prettier-ignore
-};
-
-module.exports = {
-  getUsers,
-  updateUserInfo,
-  getUserId,
-  updateAvatar,
-  createUser,
+    .catch((e) => {
+      if (e.name === ERROR_NAME.VALIDATION || e.name === ERROR_NAME.CAST) {
+        res
+          .status(STATUS.BAD_REQUEST)
+          .send({ message: ERROR_MESSAGE.BAD_REQUEST.AVATAR });
+      } else {
+        res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
+      }
+    });
 };
