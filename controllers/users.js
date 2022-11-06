@@ -4,7 +4,7 @@ const { STATUS, ERROR_MESSAGE, ERROR_NAME } = require('../constants/constants');
 module.exports.getAllUsers = (req, res) => {
   User.find({})
     .then((users) => res.send(users))
-    .catch(() => res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR }));
+    .catch(() => res.status(500).send({ message: ERROR_MESSAGE.DEFAULT_ERROR }));
 };
 
 module.exports.getUserById = (req, res) => {
@@ -13,18 +13,14 @@ module.exports.getUserById = (req, res) => {
       if (user) {
         res.send(user);
       } else {
-        res
-          .status(STATUS.NOT_FOUND)
-          .send({ message: ERROR_MESSAGE.NOT_FOUND.USER });
+        res.status(STATUS.NOT_FOUND).send({ message: ERROR_MESSAGE.NOT_FOUND.USER });
       }
     })
     .catch((e) => {
       if (e.name === ERROR_NAME.CAST) {
-        res
-          .status(STATUS.BAD_REQUEST)
-          .send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_GET });
+        res.status(STATUS.BAD_REQUEST).send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_GET });
       } else {
-        res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
+        res.status(500).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
       }
     });
 };
@@ -35,11 +31,9 @@ module.exports.createUser = (req, res) => {
     .then((user) => res.send(user))
     .catch((e) => {
       if (e.name === ERROR_NAME.VALIDATION) {
-        res
-          .status(STATUS.BAD_REQUEST)
-          .send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_CREATE });
+        res.status(STATUS.BAD_REQUEST).send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_CREATE });
       } else {
-        res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
+        res.status(500).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
       }
     });
 };
@@ -58,45 +52,33 @@ module.exports.updateUserInfo = (req, res) => {
       if (user) {
         res.send(user);
       } else {
-        res
-          .status(STATUS.NOT_FOUND)
-          .send({ message: ERROR_MESSAGE.NOT_FOUND.USER });
+        res.status(STATUS.NOT_FOUND).send({ message: ERROR_MESSAGE.NOT_FOUND.USER });
       }
     })
     .catch((e) => {
       if (e.name === ERROR_NAME.VALIDATION || e.name === ERROR_NAME.CAST) {
-        res
-          .status(STATUS.BAD_REQUEST)
-          .send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_UPDATE });
+        res.status(STATUS.BAD_REQUEST).send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_UPDATE });
       } else {
-        res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
+        res.status(500).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
       }
     });
 };
 
 module.exports.updateAvatar = (req, res) => {
   const { avatar } = req.body;
-  User.findByIdAndUpdate(
-    req.user._id,
-    { avatar },
-    { new: true },
-  )
+  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true })
     .then((user) => {
       if (user) {
         res.send(user);
       } else {
-        res
-          .status(STATUS.NOT_FOUND)
-          .send({ message: ERROR_MESSAGE.NOT_FOUND.USER });
+        res.status(STATUS.NOT_FOUND).send({ message: ERROR_MESSAGE.NOT_FOUND.USER });
       }
     })
     .catch((e) => {
       if (e.name === ERROR_NAME.VALIDATION || e.name === ERROR_NAME.CAST) {
-        res
-          .status(STATUS.BAD_REQUEST)
-          .send({ message: ERROR_MESSAGE.BAD_REQUEST.AVATAR });
+        res.status(STATUS.BAD_REQUEST).send({ message: ERROR_MESSAGE.BAD_REQUEST.AVATAR });
       } else {
-        res.status(STATUS.DEFAULT_ERROR).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
+        res.status(500).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
       }
     });
 };
