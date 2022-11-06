@@ -1,6 +1,4 @@
-/node_modules/
-.idea/
-dist/
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # Logs
 logs
@@ -8,7 +6,8 @@ logs
 npm-debug.log*
 
 # Dependency directory
-node_modules/
+node_modules
+/node_modules
 
 # Optional npm cache directory
 .npm
