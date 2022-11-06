@@ -1,16 +1,13 @@
-const router = require('express').Router();
+const cardsRouter = require('express').Router();
+// prettier-ignore
 const {
-  getAllCards, createCard, deleteCard, likeCard, dislikeCard,
+  getCards, createCard, deleteCard, likeCard, dislikeCard,
 } = require('../controllers/cards');
 
-router.get('/', getAllCards);
+cardsRouter.get('/cards', getCards);
+cardsRouter.post('/cards', createCard);
+cardsRouter.delete('/cards/:cardId', deleteCard);
+cardsRouter.put('/cards/:cardId/likes', likeCard);
+cardsRouter.delete('/cards/:cardId/likes', dislikeCard);
 
-router.post('/', createCard);
-
-router.delete('/:cardId', deleteCard);
-
-router.put('/:cardId/likes', likeCard);
-
-router.delete('/:cardId/likes', dislikeCard);
-
-module.exports = router;
+module.exports = cardsRouter;
