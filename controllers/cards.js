@@ -4,7 +4,7 @@ const { STATUS, ERROR_MESSAGE, ERROR_NAME } = require('../constants/constants');
 const getAllCards = (req, res) => {
   Card.find({})
     .then((cards) => res.send(cards))
-    .catch(() => res.status(500).send({ message: ERROR_MESSAGE.DEFAULT_ERROR }));
+    .catch(() => res.status(500).send({ message: 'Ошибка на сервере' }));
 };
 
 const createCard = (req, res) => {
@@ -58,7 +58,7 @@ const likeCard = (req, res) => Card.findByIdAndUpdate(
     if (err.name === ERROR_NAME.CAST) {
       res.status(STATUS.BAD_REQUEST).send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
     } else {
-      res.status(500).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
+      res.status(500).send({ message: 'Ошибка на сервере' });
     }
   });
 
@@ -82,7 +82,7 @@ const dislikeCard = (req, res) => Card.findByIdAndUpdate(
     if (e.name === ERROR_NAME.CAST) {
       res.status(STATUS.BAD_REQUEST).send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
     } else {
-      res.status(500).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
+      res.status(500).send({ message: 'Ошибка на сервере' });
     }
   });
 

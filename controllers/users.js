@@ -4,7 +4,7 @@ const { STATUS, ERROR_MESSAGE, ERROR_NAME } = require('../constants/constants');
 module.exports.getAllUsers = (req, res) => {
   User.find({})
     .then((users) => res.send(users))
-    .catch(() => res.status(500).send({ message: ERROR_MESSAGE.DEFAULT_ERROR }));
+    .catch(() => res.status(500).send({ message: 'Ошибка на сервере' }));
 };
 
 module.exports.getUserById = (req, res) => {
@@ -20,7 +20,7 @@ module.exports.getUserById = (req, res) => {
       if (e.name === ERROR_NAME.CAST) {
         res.status(STATUS.BAD_REQUEST).send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_GET });
       } else {
-        res.status(500).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
+        res.status(500).send({ message: 'Ошибка на сервере' });
       }
     });
 };
@@ -33,7 +33,7 @@ module.exports.createUser = (req, res) => {
       if (e.name === ERROR_NAME.VALIDATION) {
         res.status(STATUS.BAD_REQUEST).send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_CREATE });
       } else {
-        res.status(500).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
+        res.status(500).send({ message: 'Ошибка на сервере' });
       }
     });
 };
@@ -59,7 +59,7 @@ module.exports.updateUserInfo = (req, res) => {
       if (e.name === ERROR_NAME.VALIDATION || e.name === ERROR_NAME.CAST) {
         res.status(STATUS.BAD_REQUEST).send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_UPDATE });
       } else {
-        res.status(500).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
+        res.status(500).send({ message: 'Ошибка на сервере' });
       }
     });
 };
@@ -78,7 +78,7 @@ module.exports.updateAvatar = (req, res) => {
       if (e.name === ERROR_NAME.VALIDATION || e.name === ERROR_NAME.CAST) {
         res.status(STATUS.BAD_REQUEST).send({ message: ERROR_MESSAGE.BAD_REQUEST.AVATAR });
       } else {
-        res.status(500).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
+        res.status(500).send({ message: 'Ошибка на сервере' });
       }
     });
 };
