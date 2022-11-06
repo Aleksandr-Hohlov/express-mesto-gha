@@ -16,7 +16,7 @@ app.use(cookieParser());
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '6367798bfd1f1e3490d036f0',
+    _id: '6364012305b1c3eaf904ca3f',
   };
 
   next();
