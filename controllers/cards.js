@@ -11,11 +11,11 @@ const createCard = (req, res) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.send(card))
-    .catch((e) => {
-      if (e.name === ERROR_NAME.VALIDATION) {
+    .catch((err) => {
+      if (err.name === ERROR_NAME.VALIDATION) {
         res.status(STATUS.BAD_REQUEST).send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
       } else {
-        res.status(500).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
+        res.status(500).send({ message: err.message });
       }
     });
 };
@@ -29,11 +29,11 @@ const deleteCard = (req, res) => {
         res.status(STATUS.NOT_FOUND).send({ message: ERROR_MESSAGE.NOT_FOUND.CARD });
       }
     })
-    .catch((e) => {
-      if (e.name === ERROR_NAME.CAST) {
+    .catch((err) => {
+      if (err.name === ERROR_NAME.CAST) {
         res.status(STATUS.BAD_REQUEST).send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
       } else {
-        res.status(500).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
+        res.status(500).send({ message: err.message });
       }
     });
 };
@@ -54,8 +54,8 @@ const likeCard = (req, res) => Card.findByIdAndUpdate(
       res.status(STATUS.NOT_FOUND).send({ message: ERROR_MESSAGE.NOT_FOUND.CARD });
     }
   })
-  .catch((e) => {
-    if (e.name === ERROR_NAME.CAST) {
+  .catch((err) => {
+    if (err.name === ERROR_NAME.CAST) {
       res.status(STATUS.BAD_REQUEST).send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
     } else {
       res.status(500).send({ message: ERROR_MESSAGE.DEFAULT_ERROR });
