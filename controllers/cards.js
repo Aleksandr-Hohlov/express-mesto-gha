@@ -3,7 +3,7 @@ const Card = require('../models/card');
 const getAllCards = (req, res) => {
   Card.find({})
     .then((cards) => res.send(cards))
-    .catch(() => res.status(500).send({ message: 'Ошибка на сервере' }));
+    .catch(() => res.status(500).send({ message: 'Ошибка по умолчанию' }));
 };
 
 const createCard = (req, res) => {
@@ -14,7 +14,7 @@ const createCard = (req, res) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Переданы некорректные данные при создании карточки' });
       } else {
-        res.status(500).send({ message: 'Ошибка на сервере' });
+        res.status(500).send({ message: 'Ошибка по умолчанию' });
       }
     });
 };
@@ -32,7 +32,7 @@ const deleteCard = (req, res) => {
       if (err.name === 'CastError') {
         res.status(400).send({ message: 'Переданы некорректные данные при создании карточки' });
       } else {
-        res.status(500).send({ message: 'Ошибка на сервере' });
+        res.status(500).send({ message: 'Ошибка по умолчанию' });
       }
     });
 };
@@ -57,7 +57,7 @@ const likeCard = (req, res) => Card.findByIdAndUpdate(
     if (err.name === 'CastError') {
       res.status(400).send({ message: 'Переданы некорректные данные при создании карточки' });
     } else {
-      res.status(500).send({ message: 'Ошибка на сервере' });
+      res.status(500).send({ message: 'Ошибка по умолчанию' });
     }
   });
 
@@ -81,7 +81,7 @@ const dislikeCard = (req, res) => Card.findByIdAndUpdate(
     if (err.name === 'CastError') {
       res.status(400).send({ message: 'Переданы некорректные данные при создании карточки' });
     } else {
-      res.status(500).send({ message: 'Ошибка на сервере' });
+      res.status(500).send({ message: 'Ошибка по умолчанию' });
     }
   });
 

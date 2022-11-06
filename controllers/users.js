@@ -1,10 +1,9 @@
 const User = require('../models/user');
-const { ERROR_MESSAGE } = require('../constants/constants');
 
 module.exports.getAllUsers = (req, res) => {
   User.find({})
     .then((users) => res.send(users))
-    .catch(() => res.status(500).send({ message: 'Ошибка на сервере' }));
+    .catch(() => res.status(500).send({ message: 'Ошибка по умолчанию' }));
 };
 
 module.exports.getUserById = (req, res) => {
@@ -13,14 +12,14 @@ module.exports.getUserById = (req, res) => {
       if (user) {
         res.send(user);
       } else {
-        res.status(404).send({ message: ERROR_MESSAGE.NOT_FOUND.USER });
+        res.status(404).send({ message: 'Пользователь с указанным _id не найден' });
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_GET });
+        res.status(400).send({ message: 'Некорректный _id при поиске пользователя' });
       } else {
-        res.status(500).send({ message: 'Ошибка на сервере' });
+        res.status(500).send({ message: 'Ошибка по умолчанию' });
       }
     });
 };
@@ -31,9 +30,9 @@ module.exports.createUser = (req, res) => {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_CREATE });
+        res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя' });
       } else {
-        res.status(500).send({ message: 'Ошибка на сервере' });
+        res.status(500).send({ message: 'Ошибка по умолчанию' });
       }
     });
 };
@@ -52,14 +51,14 @@ module.exports.updateUserInfo = (req, res) => {
       if (user) {
         res.send(user);
       } else {
-        res.status(404).send({ message: ERROR_MESSAGE.NOT_FOUND.USER });
+        res.status(404).send({ message: 'Пользователь с указанным _id не найден' });
       }
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        res.status(400).send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_UPDATE });
+        res.status(400).send({ message: 'Переданы некорректные данные при обновлении профиля' });
       } else {
-        res.status(500).send({ message: 'Ошибка на сервере' });
+        res.status(500).send({ message: 'Ошибка по умолчанию' });
       }
     });
 };
@@ -71,14 +70,14 @@ module.exports.updateAvatar = (req, res) => {
       if (user) {
         res.send(user);
       } else {
-        res.status(404).send({ message: ERROR_MESSAGE.NOT_FOUND.USER });
+        res.status(404).send({ message: 'Пользователь с указанным _id не найден' });
       }
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        res.status(400).send({ message: ERROR_MESSAGE.BAD_REQUEST.AVATAR });
+        res.status(400).send({ message: 'Переданы некорректные данные при обновлении аватара' });
       } else {
-        res.status(500).send({ message: 'Ошибка на сервере' });
+        res.status(500).send({ message: 'Ошибка по умолчанию' });
       }
     });
 };
