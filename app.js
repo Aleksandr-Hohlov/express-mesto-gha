@@ -31,7 +31,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 // временная авторизация
 app.use((req, res, next) => {
   req.user = {
-    _id: '6364012305b1c3eaf904ca3f',
+    _id: '636812fe2b2fabadd45ea998',
   };
 
   next();
@@ -40,6 +40,8 @@ app.use((req, res, next) => {
 app.use('/users', userRouter);
 app.use('/cards', cardRouter);
 
-app.use('*', (req, res) => { res.status(STATUS.NOT_FOUND).send({ message: ERROR_MESSAGE.NOT_FOUND.PAGE }); });
+app.use('*', (req, res) => {
+  res.status(STATUS.NOT_FOUND).send({ message: ERROR_MESSAGE.NOT_FOUND.PAGE });
+});
 
 app.listen(PORT);
