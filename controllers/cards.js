@@ -1,10 +1,10 @@
 const Card = require('../models/card');
-const { ERROR_MESSAGE, ERROR_NAME } = require('../constants/constants');
+const { ERROR_MESSAGE } = require('../constants/constants');
 
 const getAllCards = (req, res) => {
   Card.find({})
     .then((cards) => res.send(cards))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch(() => res.status(500).send({ message: 'Ошибка на сервере' }));
 };
 
 const createCard = (req, res) => {
@@ -12,10 +12,10 @@ const createCard = (req, res) => {
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.send(card))
     .catch((err) => {
-      if (err.name === ERROR_NAME.VALIDATION) {
-        res.status(400).send({ message: err.message });
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Переданы некорректные данные при создании карточки' });
       } else {
-        res.status(500).send({ message: err.message });
+        res.status(500).send({ message: 'Ошибка на сервере' });
       }
     });
 };
@@ -33,7 +33,7 @@ const deleteCard = (req, res) => {
       if (err.name === 'CastError') {
         res.status(400).send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
       } else {
-        res.status(500).send({ message: err.message });
+        res.status(500).send({ message: 'Ошибка на сервере' });
       }
     });
 };
@@ -58,7 +58,7 @@ const likeCard = (req, res) => Card.findByIdAndUpdate(
     if (err.name === 'CastError') {
       res.status(400).send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
     } else {
-      res.status(500).send({ message: err.message });
+      res.status(500).send({ message: 'Ошибка на сервере' });
     }
   });
 
@@ -82,7 +82,7 @@ const dislikeCard = (req, res) => Card.findByIdAndUpdate(
     if (err.name === 'CastError') {
       res.status(400).send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
     } else {
-      res.status(500).send({ message: err.message });
+      res.status(500).send({ message: 'Ошибка на сервере' });
     }
   });
 

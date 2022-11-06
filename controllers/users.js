@@ -1,5 +1,5 @@
 const User = require('../models/user');
-const { ERROR_MESSAGE, ERROR_NAME } = require('../constants/constants');
+const { ERROR_MESSAGE } = require('../constants/constants');
 
 module.exports.getAllUsers = (req, res) => {
   User.find({})
@@ -30,7 +30,7 @@ module.exports.createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then((user) => res.send(user))
     .catch((err) => {
-      if (err.name === ERROR_NAME.VALIDATION) {
+      if (err.name === 'ValidationError') {
         res.status(400).send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_CREATE });
       } else {
         res.status(500).send({ message: 'Ошибка на сервере' });
@@ -56,7 +56,7 @@ module.exports.updateUserInfo = (req, res) => {
       }
     })
     .catch((err) => {
-      if (err.name === ERROR_NAME.VALIDATION || err.name === 'CastError') {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
         res.status(400).send({ message: ERROR_MESSAGE.BAD_REQUEST.USER_UPDATE });
       } else {
         res.status(500).send({ message: 'Ошибка на сервере' });
@@ -75,7 +75,7 @@ module.exports.updateAvatar = (req, res) => {
       }
     })
     .catch((err) => {
-      if (err.name === ERROR_NAME.VALIDATION || err.name === 'CastError') {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
         res.status(400).send({ message: ERROR_MESSAGE.BAD_REQUEST.AVATAR });
       } else {
         res.status(500).send({ message: 'Ошибка на сервере' });
