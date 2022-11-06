@@ -1,5 +1,4 @@
 const Card = require('../models/card');
-const { ERROR_MESSAGE } = require('../constants/constants');
 
 const getAllCards = (req, res) => {
   Card.find({})
@@ -26,12 +25,12 @@ const deleteCard = (req, res) => {
       if (card) {
         res.send(card);
       } else {
-        res.status(404).send({ message: ERROR_MESSAGE.NOT_FOUND.CARD });
+        res.status(404).send({ message: 'Карточка с указанным _id не найдена' });
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
+        res.status(400).send({ message: 'Переданы некорректные данные при создании карточки' });
       } else {
         res.status(500).send({ message: 'Ошибка на сервере' });
       }
@@ -51,12 +50,12 @@ const likeCard = (req, res) => Card.findByIdAndUpdate(
     if (card) {
       res.send(card);
     } else {
-      res.status(404).send({ message: ERROR_MESSAGE.NOT_FOUND.CARD });
+      res.status(404).send({ message: 'Карточка с указанным _id не найдена' });
     }
   })
   .catch((err) => {
     if (err.name === 'CastError') {
-      res.status(400).send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
+      res.status(400).send({ message: 'Переданы некорректные данные при создании карточки' });
     } else {
       res.status(500).send({ message: 'Ошибка на сервере' });
     }
@@ -75,12 +74,12 @@ const dislikeCard = (req, res) => Card.findByIdAndUpdate(
     if (card) {
       res.send(card);
     } else {
-      res.status(404).send({ message: ERROR_MESSAGE.NOT_FOUND.CARD_LIKES });
+      res.status(404).send({ message: 'Передан несуществующий _id карточки' });
     }
   })
   .catch((err) => {
     if (err.name === 'CastError') {
-      res.status(400).send({ message: ERROR_MESSAGE.BAD_REQUEST.CARD });
+      res.status(400).send({ message: 'Переданы некорректные данные при создании карточки' });
     } else {
       res.status(500).send({ message: 'Ошибка на сервере' });
     }
