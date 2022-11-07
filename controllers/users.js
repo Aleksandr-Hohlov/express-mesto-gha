@@ -1,9 +1,18 @@
 const User = require('../models/user');
+const {
+  err500,
+  err400,
+  err404,
+  messageErrDefault,
+  messageErr,
+  ValidationError,
+  CastError,
+} = require('../constants/constants');
 
 const getAllUsers = (req, res) => {
   User.find({})
     .then((users) => res.send(users))
-    .catch(() => res.status(500).send({ message: 'Ошибка по умолчанию' }));
+    .catch(() => res.status(err500).send({ message: messageErrDefault }));
 };
 
 const getUserById = (req, res) => {
@@ -12,14 +21,14 @@ const getUserById = (req, res) => {
       if (user) {
         res.send(user);
       } else {
-        res.status(404).send({ message: 'Пользователь с указанным _id не найден' });
+        res.status(err404).send({ message: messageErr.notFound.user });
       }
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Некорректный _id при поиске пользователя' });
+      if (err.name === CastError) {
+        res.status(err400).send({ message: messageErr.badRequest.getUserById });
       } else {
-        res.status(500).send({ message: 'Ошибка по умолчанию' });
+        res.status(err500).send({ message: messageErrDefault });
       }
     });
 };
@@ -29,10 +38,10 @@ const createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then((user) => res.send(user))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя' });
+      if (err.name === ValidationError) {
+        res.status(err400).send({ message: messageErr.badRequest.createUser });
       } else {
-        res.status(500).send({ message: 'Ошибка по умолчанию' });
+        res.status(err500).send({ message: messageErrDefault });
       }
     });
 };
@@ -51,33 +60,33 @@ const updateUserInfo = (req, res) => {
       if (user) {
         res.send(user);
       } else {
-        res.status(404).send({ message: 'Пользователь с указанным _id не найден' });
+        res.status(err404).send({ message: messageErr.notFound.user });
       }
     })
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при обновлении профиля' });
+      if (err.name === ValidationError || err.name === CastError) {
+        res.status(err400).send({ message: messageErr.badRequest.updateUserInfo });
       } else {
-        res.status(500).send({ message: 'Ошибка по умолчанию' });
+        res.status(err500).send({ message: messageErrDefault });
       }
     });
 };
 
 const updateAvatar = (req, res) => {
   const { avatar } = req.body;
-  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true })
+  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
     .then((user) => {
       if (user) {
         res.send(user);
       } else {
-        res.status(404).send({ message: 'Пользователь с указанным _id не найден' });
+        res.status(err404).send({ message: messageErr.notFound.user });
       }
     })
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при обновлении аватара' });
+      if (err.name === ValidationError || err.name === CastError) {
+        res.status(err400).send({ message: messageErr.badRequest.updateAvatar });
       } else {
-        res.status(500).send({ message: 'Ошибка по умолчанию' });
+        res.status(err500).send({ message: messageErrDefault });
       }
     });
 };
