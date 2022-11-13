@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
-const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -22,7 +21,7 @@ const userSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator: (v) => validator.isURL(v),
-      message: 'Неверный формат ссылки',
+      message: 'Неправильный формат ссылки',
     },
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
   },
@@ -32,7 +31,7 @@ const userSchema = new mongoose.Schema({
     unique: true,
     validate: {
       validator: (v) => validator.isEmail(v),
-      message: 'Неверный формат email',
+      message: 'Неправильный формат email',
     },
   },
   password: {
@@ -41,7 +40,7 @@ const userSchema = new mongoose.Schema({
     select: false,
   },
 });
-
+/*
 // eslint-disable-next-line func-names
 userSchema.statics.findUserByCredentials = function (email, password) {
   return this.findOne({ email })
@@ -58,5 +57,5 @@ userSchema.statics.findUserByCredentials = function (email, password) {
       });
     });
 };
-
+*/
 module.exports = mongoose.model('user', userSchema);
