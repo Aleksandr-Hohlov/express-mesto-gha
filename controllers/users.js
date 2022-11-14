@@ -1,52 +1,96 @@
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const {
-  err500,
-  err400,
-  err404,
-  messageErrDefault,
-  messageErr,
-  ValidationError,
-  CastError,
-} = require('../constants/constants');
+const { messageErr, ValidationError, CastError } = require('../constants/constants');
 
-const getAllUsers = (req, res) => {
+const BadRequestError = require('../errors/BadRequestError');
+const UnauthorizedError = require('../errors/UnauthorizedError');
+const ConflictError = require('../errors/ConflictError');
+const NotFoundError = require('../errors/NotFoundError');
+
+const getAllUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send(users))
-    .catch(() => res.status(err500).send({ message: messageErrDefault }));
+    .catch(next);
 };
 
-const getUserById = (req, res) => {
+const getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
-      if (user) {
-        res.send(user);
+      if (!user) {
+        throw new NotFoundError(messageErr.notFound.user);
       } else {
-        res.status(err404).send({ message: messageErr.notFound.user });
+        res.status(200).send({ data: user });
       }
     })
     .catch((err) => {
       if (err.name === CastError) {
-        res.status(err400).send({ message: messageErr.badRequest.getUserById });
+        next(new BadRequestError(messageErr.badRequest.getUserById));
       } else {
-        res.status(err500).send({ message: messageErrDefault });
+        next(err);
       }
     });
 };
 
-const createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
-  User.create({ name, about, avatar })
-    .then((user) => res.send(user))
+const getMe = (req, res, next) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      if (user) {
+        res.send(user);
+      } else {
+        throw new NotFoundError(messageErr.notFound.user);
+      }
+    })
+    .catch(next);
+};
+
+// prettier-ignore
+const createUser = (req, res, next) => {
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
+  bcrypt
+    .hash(password, 10)
+    .then((hash) => User.create({
+      name,
+      about,
+      avatar,
+      email,
+      password: hash,
+    }))
+    .then(() => res.send({
+      data: {
+        name,
+        about,
+        avatar,
+        email,
+      },
+    }))
     .catch((err) => {
       if (err.name === ValidationError) {
-        res.status(err400).send({ message: messageErr.badRequest.createUser });
+        next(new BadRequestError(messageErr.badRequest.createUser));
+      }
+      if (err.code === 11000) {
+        next(new ConflictError(messageErr.badRequest.conflictEmail));
       } else {
-        res.status(err500).send({ message: messageErrDefault });
+        next(err);
       }
     });
 };
 
-const updateUserInfo = (req, res) => {
+const loginUser = (req, res, next) => {
+  const { email, password } = req.body;
+  User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+      res.send({ token });
+    })
+    .catch(() => {
+      next(new UnauthorizedError(messageErr.badRequest.unauthorized));
+    });
+};
+
+const updateUserInfo = (req, res, next) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
@@ -59,34 +103,32 @@ const updateUserInfo = (req, res) => {
     .then((user) => {
       if (user) {
         res.send(user);
-      } else {
-        res.status(err404).send({ message: messageErr.notFound.user });
       }
     })
     .catch((err) => {
       if (err.name === ValidationError || err.name === CastError) {
-        res.status(err400).send({ message: messageErr.badRequest.updateUserInfo });
+        next(new BadRequestError(messageErr.badRequest.updateUserInfo));
       } else {
-        res.status(err500).send({ message: messageErrDefault });
+        next(err);
       }
     });
 };
 
-const updateAvatar = (req, res) => {
+const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
     .then((user) => {
-      if (user) {
-        res.send(user);
+      if (!user) {
+        throw new NotFoundError(messageErr.notFound.user);
       } else {
-        res.status(err404).send({ message: messageErr.notFound.user });
+        res.status(200).send({ data: user });
       }
     })
     .catch((err) => {
       if (err.name === ValidationError || err.name === CastError) {
-        res.status(err400).send({ message: messageErr.badRequest.updateAvatar });
+        next(new BadRequestError(messageErr.badRequest.updateAvatar));
       } else {
-        res.status(err500).send({ message: messageErrDefault });
+        next(err);
       }
     });
 };
@@ -97,4 +139,6 @@ module.exports = {
   createUser,
   updateUserInfo,
   updateAvatar,
+  loginUser,
+  getMe,
 };

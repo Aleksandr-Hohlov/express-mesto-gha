@@ -1,10 +1,13 @@
 module.exports.err500 = 500;
 module.exports.err400 = 400;
 module.exports.err404 = 404;
-module.exports.messageErrDefault = 'Ошибка по умолчанию';
-
+module.exports.messageErrDefault = 'Некорректные данные';
+module.exports.messageErrServer = 'На сервере произошла ошибка';
+module.exports.messageSuccessDel = 'Карточка удалена';
 module.exports.ValidationError = 'ValidationError';
 module.exports.CastError = 'CastError';
+// prettier-ignore
+module.exports.regex = /https?:\/\/(www\.)?[-a-zA-Z0-9:%._~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_.~#?&//=]*)/;
 
 module.exports.messageErr = {
   notFound: {
@@ -21,5 +24,9 @@ module.exports.messageErr = {
     createUser: 'Переданы некорректные данные при создании пользователя',
     updateUserInfo: 'Переданы некорректные данные при обновлении профиля',
     updateAvatar: 'Переданы некорректные данные при обновлении аватара',
+    conflictEmail: 'Пользователь с данным email уже существует',
+    unauthorized: 'Неправильный Email или пароль',
+    forbiddenDel: 'Нет прав для удаление данной карточки',
+    auth: 'Необходимо авторизоваться',
   },
 };

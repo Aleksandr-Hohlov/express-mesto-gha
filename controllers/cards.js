@@ -1,53 +1,59 @@
 const Card = require('../models/card');
 const {
-  err500,
-  err400,
-  err404,
-  messageErrDefault,
   messageErr,
   ValidationError,
   CastError,
+  messageErrDefault,
+  messageSuccessDel,
 } = require('../constants/constants');
 
-const getAllCards = (req, res) => {
+const BadRequestError = require('../errors/BadRequestError');
+const ForbiddenError = require('../errors/ForbiddenError');
+const NotFoundError = require('../errors/NotFoundError');
+
+const getAllCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.send(cards))
-    .catch(() => res.status(err500).send({ message: messageErrDefault }));
+    .catch((err) => next(err));
 };
 
-const createCard = (req, res) => {
+const createCard = (req, res, next) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === ValidationError) {
-        res.status(err400).send({ message: messageErr.badRequest.card });
+        next(new BadRequestError(messageErr.badRequest.card));
       } else {
-        res.status(err500).send({ message: messageErrDefault });
+        next(err);
       }
     });
 };
 
-const deleteCard = (req, res) => {
+const deleteCard = (req, res, next) => {
   Card.findByIdAndDelete(req.params.cardId)
     .then((card) => {
-      if (card) {
-        res.send(card);
+      if (!card) {
+        next(new NotFoundError(messageErr.notFound.card));
+      } else if (String(card.owner) === req.user._id) {
+        Card.findByIdAndRemove(req.params.cardId)
+          .then(() => res.status(200).send({ message: messageSuccessDel }))
+          .catch(() => next(new NotFoundError(messageErr.notFound.card)));
       } else {
-        res.status(err404).send({ message: messageErr.notFound.card });
+        throw new ForbiddenError(messageErr.badRequest.forbiddenDel);
       }
     })
     .catch((err) => {
       if (err.name === CastError) {
-        res.status(err400).send({ message: messageErr.badRequest.card });
+        next(new BadRequestError(messageErrDefault));
       } else {
-        res.status(err500).send({ message: messageErrDefault });
+        next(err);
       }
     });
 };
 
 // prettier-ignore
-const likeCard = (req, res) => Card.findByIdAndUpdate(
+const likeCard = (req, res, next) => Card.findByIdAndUpdate(
   req.params.cardId,
   { $addToSet: { likes: req.user._id } },
   {
@@ -56,22 +62,21 @@ const likeCard = (req, res) => Card.findByIdAndUpdate(
   },
 )
   .then((card) => {
-    if (card) {
-      res.send(card);
-    } else {
-      res.status(err404).send({ message: messageErr.notFound.card });
+    if (!card) {
+      throw new NotFoundError(messageErr.notFound.card);
     }
+    return res.send(card);
   })
   .catch((err) => {
     if (err.name === CastError) {
-      res.status(err400).send({ message: messageErr.badRequest.cardLike });
+      next(new BadRequestError(messageErr.badRequest.cardLike));
     } else {
-      res.status(err500).send({ message: messageErrDefault });
+      next(err);
     }
   });
 
 // prettier-ignore
-const dislikeCard = (req, res) => Card.findByIdAndUpdate(
+const dislikeCard = (req, res, next) => Card.findByIdAndUpdate(
   req.params.cardId,
   { $pull: { likes: req.user._id } },
   {
@@ -80,17 +85,16 @@ const dislikeCard = (req, res) => Card.findByIdAndUpdate(
   },
 )
   .then((card) => {
-    if (card) {
-      res.send(card);
-    } else {
-      res.status(err404).send({ message: messageErr.notFound.cardLike });
+    if (!card) {
+      throw new NotFoundError(messageErr.notFound.cardLike);
     }
+    return res.send(card);
   })
   .catch((err) => {
     if (err.name === CastError) {
-      res.status(err400).send({ message: messageErr.badRequest.cardLike });
+      next(new BadRequestError(messageErrDefault));
     } else {
-      res.status(err500).send({ message: messageErrDefault });
+      next(err);
     }
   });
 
