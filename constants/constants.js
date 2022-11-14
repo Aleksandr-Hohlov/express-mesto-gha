@@ -6,8 +6,6 @@ module.exports.messageErrServer = 'На сервере произошла оши
 module.exports.messageSuccessDel = 'Карточка удалена';
 module.exports.ValidationError = 'ValidationError';
 module.exports.CastError = 'CastError';
-// prettier-ignore
-module.exports.regex = /https?:\/\/(www\.)?[-a-zA-Z0-9:%._~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_.~#?&//=]*)/;
 
 module.exports.messageErr = {
   notFound: {
