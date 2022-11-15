@@ -38,7 +38,7 @@ const getUserById = (req, res, next) => {
 };
 
 const getUser = (req, res, next) => {
-  User.findById(req.user._id)
+  User.findById(req.params.userId)
     .then((user) => {
       if (user) {
         res.send(user);
