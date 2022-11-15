@@ -40,10 +40,10 @@ const getUserById = (req, res, next) => {
 const getUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
-      if (!user) {
-        throw new NotFoundError(messageErr.notFound.user);
+      if (user) {
+        res.send(user);
       } else {
-        res.status(200).send({ data: user });
+        throw new NotFoundError(messageErr.notFound.user);
       }
     })
     .catch((err) => {
