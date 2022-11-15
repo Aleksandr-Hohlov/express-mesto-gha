@@ -10,6 +10,7 @@ const cardRouter = require('./routes/cards');
 const { loginUser, createUser } = require('./controllers/users');
 const { messageErr } = require('./constants/constants');
 const handleErrors = require('./middlewares/handleErrors');
+const { createUserValidation, loginValidation } = require('./middlewares/validation');
 
 const { PORT = 3000 } = process.env;
 
@@ -27,10 +28,10 @@ app.use((req, res, next) => {
   };
   next();
 });
+app.post('/signin', loginValidation, loginUser);
+app.post('/signup', createUserValidation, createUser);
 app.use('/users', userRouter);
 app.use('/cards', cardRouter);
-app.post('/signin', loginUser);
-app.post('/signup', createUser);
 
 app.use('*', () => {
   throw new NotFoundError(messageErr.notFound.page);
