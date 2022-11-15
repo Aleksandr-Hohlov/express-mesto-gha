@@ -32,7 +32,7 @@ const getUserById = (req, res, next) => {
     });
 };
 
-const getMe = (req, res, next) => {
+const getUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (user) {
@@ -140,5 +140,5 @@ module.exports = {
   updateUserInfo,
   updateAvatar,
   loginUser,
-  getMe,
+  getUser,
 };
