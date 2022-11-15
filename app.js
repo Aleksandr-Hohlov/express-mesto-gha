@@ -23,17 +23,14 @@ const { createUserValidation, loginValidation } = require('./middlewares/validat
 
 app.post('/signin', loginValidation, loginUser);
 app.post('/signup', createUserValidation, createUser);
-
+app.use(auth);
 app.use('/cards', cardRouter);
 app.use('/users', userRouter);
 
-app.use(auth);
-
-app.use(errors());
-app.use('/*', () => {
+app.use('*', () => {
   throw new NotFoundError(messageErr.notFound.page);
 });
-
+app.use(errors());
 app.use(handleErrors);
 
 app.listen(PORT);
