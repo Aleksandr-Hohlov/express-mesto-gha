@@ -11,6 +11,7 @@ const { loginUser, createUser } = require('./controllers/users');
 const { messageErr } = require('./constants/constants');
 const handleErrors = require('./middlewares/handleErrors');
 const auth = require('./middlewares/auth');
+const { createUserValidation, loginValidation } = require('./middlewares/validation');
 
 const { PORT = 3000 } = process.env;
 
@@ -22,8 +23,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
-app.post('/signin', loginUser);
-app.post('/signup', createUser);
+app.post('/signin', loginValidation, loginUser);
+app.post('/signup', createUserValidation, createUser);
 app.use('/users', userRouter);
 app.use('/cards', cardRouter);
 app.use(auth);
