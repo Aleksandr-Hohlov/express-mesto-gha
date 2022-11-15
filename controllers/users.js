@@ -19,24 +19,6 @@ const getAllUsers = (req, res, next) => {
     .catch(next);
 };
 
-const getUserById = (req, res, next) => {
-  User.findById(req.params.userId)
-    .then((user) => {
-      if (!user) {
-        throw new NotFoundError(messageErr.notFound.user);
-      } else {
-        res.status(200).send({ data: user });
-      }
-    })
-    .catch((err) => {
-      if (err.name === CastError) {
-        next(new BadRequestError(messageErr.badRequest.getUserById));
-      } else {
-        next(err);
-      }
-    });
-};
-
 const getUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
@@ -49,6 +31,24 @@ const getUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === CastError) {
         next(new BadRequestError(messageErrDefault));
+      } else {
+        next(err);
+      }
+    });
+};
+
+const getUserById = (req, res, next) => {
+  User.findById(req.params.userId)
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError(messageErr.notFound.user);
+      } else {
+        res.status(200).send({ data: user });
+      }
+    })
+    .catch((err) => {
+      if (err.name === CastError) {
+        next(new BadRequestError(messageErr.badRequest.getUserById));
       } else {
         next(err);
       }
