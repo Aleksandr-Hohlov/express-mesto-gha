@@ -19,6 +19,7 @@ const getAllUsers = (req, res, next) => {
     .catch(next);
 };
 
+/*
 const getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
@@ -35,10 +36,10 @@ const getUserById = (req, res, next) => {
         next(err);
       }
     });
-};
+}; */
 
 const getUser = (req, res, next) => {
-  User.findById(req.user._id)
+  User.findById(req.params.userId || req.user._id)
     .then((user) => {
       if (!user) {
         throw new NotFoundError(messageErr.notFound.user);
@@ -94,12 +95,6 @@ const loginUser = (req, res, next) => {
   User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
-      res.cookie('jwt', token, {
-        maxAge: 3600000 * 24 * 7,
-        httpOnly: true,
-        sameSite: true,
-      });
-
       res.send({ token });
     })
     .catch(() => {
@@ -151,7 +146,6 @@ const updateAvatar = (req, res, next) => {
 };
 
 module.exports = {
-  getUserById,
   getAllUsers,
   createUser,
   updateUserInfo,

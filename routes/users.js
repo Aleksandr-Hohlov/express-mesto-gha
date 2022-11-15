@@ -6,17 +6,14 @@ const {
   updateAvatarValidation,
 } = require('../middlewares/validation');
 
+// prettier-ignore
 const {
-  getAllUsers,
-  getUserById,
-  updateUserInfo,
-  updateAvatar,
-  getUser,
+  getAllUsers, updateUserInfo, updateAvatar, getUser,
 } = require('../controllers/users');
 
 router.use(auth);
 router.get('/', getAllUsers);
-router.get('/:userId', userIdValidation, getUserById);
+router.get('/:userId', userIdValidation, getUser);
 router.get('/me', getUser);
 router.patch('/me', updateUserValidation, updateUserInfo);
 router.patch('/me/avatar', updateAvatarValidation, updateAvatar);
