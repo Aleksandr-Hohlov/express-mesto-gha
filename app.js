@@ -31,10 +31,11 @@ app.use('/users', userRouter);
 
 app.use(auth);
 
+app.use(errors());
 app.use('/*', () => {
   throw new NotFoundError(messageErr.notFound.page);
 });
-app.use(errors());
+
 app.use(handleErrors);
 
 app.listen(PORT);
