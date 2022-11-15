@@ -38,12 +38,12 @@ const getUserById = (req, res, next) => {
 };
 
 const getUser = (req, res, next) => {
-  User.findById(req.params.userId)
+  User.findById(req.user._id)
     .then((user) => {
-      if (user) {
-        res.send(user);
-      } else {
+      if (!user) {
         throw new NotFoundError(messageErr.notFound.user);
+      } else {
+        res.status(200).send({ data: user });
       }
     })
     .catch((err) => {
