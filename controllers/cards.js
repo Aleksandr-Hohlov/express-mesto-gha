@@ -13,7 +13,7 @@ const NotFoundError = require('../errors/NotFoundError');
 
 const getAllCards = (req, res, next) => {
   Card.find({})
-    .then((cards) => res.send(cards))
+    .then((card) => res.status(200).send({ data: card }))
     .catch((err) => next(err));
 };
 
