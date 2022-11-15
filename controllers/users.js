@@ -1,7 +1,12 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const { messageErr, ValidationError, CastError } = require('../constants/constants');
+const {
+  messageErr,
+  ValidationError,
+  CastError,
+  messageErrDefault,
+} = require('../constants/constants');
 
 const BadRequestError = require('../errors/BadRequestError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
@@ -35,13 +40,19 @@ const getUserById = (req, res, next) => {
 const getUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
-      if (user) {
-        res.send(user);
-      } else {
+      if (!user) {
         throw new NotFoundError(messageErr.notFound.user);
+      } else {
+        res.status(200).send({ data: user });
       }
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === CastError) {
+        next(new BadRequestError(messageErrDefault));
+      } else {
+        next(err);
+      }
+    });
 };
 
 // prettier-ignore
