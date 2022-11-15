@@ -2,7 +2,11 @@ const router = require('express').Router();
 
 // prettier-ignore
 const {
-  getCards, createCard, deleteCard, likeCard, dislikeCard,
+  getCards,
+  createCard,
+  deleteCard,
+  likeCard,
+  dislikeCard,
 } = require('../controllers/cards');
 
 router.get('/', getCards);

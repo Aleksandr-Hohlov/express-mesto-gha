@@ -6,14 +6,14 @@ const NotFoundError = require('../errors/NotFoundError');
 const ForbiddenError = require('../errors/ForbiddenError');
 
 /* найти все карточки */
-module.exports.getAllCards = (req, res, next) => {
+const getCards = (req, res, next) => {
   Card.find({})
     .then((card) => res.status(200).send({ data: card }))
     .catch((err) => next(err));
 };
 
 /* созать карточку (имя, ссылка, владелец-id) */
-module.exports.createCard = (req, res, next) => {
+const createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
   Card.create({ name, link, owner })
@@ -28,7 +28,7 @@ module.exports.createCard = (req, res, next) => {
 };
 
 /* удалить карточку  */
-module.exports.deleteCard = (req, res, next) => {
+const deleteCard = (req, res, next) => {
   const id = req.params.cardId;
   Card.findById(id)
     .then((card) => {
@@ -52,7 +52,7 @@ module.exports.deleteCard = (req, res, next) => {
 };
 
 /* лайкнуть карточку  */
-module.exports.likeCard = (req, res, next) => {
+const likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true })
     .then((card) => {
       if (!card) {
@@ -70,7 +70,7 @@ module.exports.likeCard = (req, res, next) => {
 };
 
 /* дизлайкнуть карточку */
-module.exports.dislikeCard = (req, res, next) => {
+const dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: req.user._id } }, { new: true })
     .then((card) => {
       if (!card) {
@@ -85,4 +85,12 @@ module.exports.dislikeCard = (req, res, next) => {
         next(err);
       }
     });
+};
+
+module.exports = {
+  getCards,
+  createCard,
+  deleteCard,
+  likeCard,
+  dislikeCard,
 };
