@@ -13,7 +13,7 @@ const NotFoundError = require('../errors/NotFoundError');
 
 const getAllCards = (req, res, next) => {
   Card.find({})
-    .then((card) => res.status(200).send({ data: card }))
+    .then((card) => res.send({ data: card }))
     .catch((err) => next(err));
 };
 
@@ -32,25 +32,15 @@ const createCard = (req, res, next) => {
 };
 
 const deleteCard = (req, res, next) => {
-  Card.findByIdAndDelete(req.params.cardId)
+  Card.findById(req.params)
+    .orFail(() => new NotFoundError(messageErr.notFound.card))
     .then((card) => {
-      if (!card) {
-        next(new NotFoundError(messageErr.notFound.card));
-      } else if (String(card.owner) === req.user._id) {
-        Card.findByIdAndRemove(req.params.cardId)
-          .then(() => res.status(200).send({ message: messageSuccessDel }))
-          .catch(() => next(new NotFoundError(messageErr.notFound.card)));
-      } else {
-        throw new ForbiddenError(messageErr.badRequest.forbiddenDel);
+      if (!card.owner.equals(req.user._id)) {
+        return next(new ForbiddenError(messageErr.badRequest.forbiddenDel));
       }
+      return card.remove().then(() => res.send({ message: messageSuccessDel }));
     })
-    .catch((err) => {
-      if (err.name === CastError) {
-        next(new BadRequestError(messageErrDefault));
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
 };
 
 // prettier-ignore
