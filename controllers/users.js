@@ -79,13 +79,12 @@ const createUser = (req, res, next) => {
     }))
     .catch((err) => {
       if (err.name === ValidationError) {
-        next(new BadRequestError(messageErr.badRequest.createUser));
+        return next(new BadRequestError(messageErr.badRequest.createUser));
       }
       if (err.code === 11000) {
-        next(new ConflictError(messageErr.badRequest.conflictEmail));
-      } else {
-        next(err);
+        return next(new ConflictError(messageErr.badRequest.conflictEmail));
       }
+      return next(err);
     });
 };
 

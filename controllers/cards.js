@@ -32,7 +32,7 @@ const createCard = (req, res, next) => {
 };
 
 const deleteCard = (req, res, next) => {
-  Card.findById(req.params)
+  Card.findById(req.params.cardId)
     .orFail(() => new NotFoundError(messageErr.notFound.card))
     .then((card) => {
       if (!card.owner.equals(req.user._id)) {
