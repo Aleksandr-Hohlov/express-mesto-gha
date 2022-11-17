@@ -7,19 +7,16 @@ const userSchema = new mongoose.Schema({
     type: String,
     minLength: 2,
     maxLength: 30,
-    required: true,
     default: 'Жак-Ив Кусто',
   },
   about: {
     type: String,
     minLength: 2,
     maxLength: 30,
-    required: true,
     default: 'Исследователь',
   },
   avatar: {
     type: String,
-    required: true,
     validate: {
       validator: (v) => validator.isURL(v),
       message: 'Неправильный формат ссылки',
